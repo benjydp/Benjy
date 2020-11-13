@@ -35,7 +35,7 @@
                     <GridViewColumn>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsDone}" VerticalAlignment="Center">
+                                <CheckBox IsChecked="{Binding IsDone, Mode=TwoWay}" VerticalAlignment="Center">
                                     <CheckBox.LayoutTransform>
                                         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
                                     </CheckBox.LayoutTransform>
