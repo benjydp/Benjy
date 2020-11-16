@@ -1,46 +1,45 @@
-﻿using System;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Benjy.CheckYoShit
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+#if DEBUG
+            this.AttachDevTools();
+#endif
+            this.DataContext = this;
+
             ToDoItems.CollectionChanged += ToDoItems_CollectionChanged;
-            lvToDoList.ItemsSource = ToDoItems;
             foreach (var item in ReadListFromDisk())
                 ToDoItems.Add(item);
         }
 
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
+
         private void ToDoItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if(e.NewItems != null)
+            if (e.NewItems != null)
             {
-                foreach(var item in e.NewItems)
+                foreach (var item in e.NewItems)
                 {
-                    if(item is ToDoItem toDoItem)
+                    if (item is ToDoItem toDoItem)
                     {
                         toDoItem.PropertyChanged += ToDoItem_PropertyChanged;
                     }
@@ -69,8 +68,8 @@ namespace Benjy.CheckYoShit
         public ObservableCollection<ToDoItem> ToDoItems { get; } = new();
 
 
-        private static readonly string diskFileDirectory = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\Benjy.CheckYoShit";
-        private static readonly string diskFilePath = $@"{diskFileDirectory}\data.json";
+        private static readonly string diskFileDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Benjy.CheckYoShit");
+        private static readonly string diskFilePath = Path.Combine(diskFileDirectory, "data.json");
 
         public static List<ToDoItem> ReadListFromDisk()
         {
@@ -78,9 +77,11 @@ namespace Benjy.CheckYoShit
             {
                 string jsonText = File.ReadAllText(diskFilePath);
                 List<ToDoItem> toDoItems = JsonSerializer.Deserialize<List<ToDoItem>>(jsonText);
+                Console.WriteLine(diskFilePath);
+                Console.WriteLine(jsonText);
                 return toDoItems;
             }
-            
+
             return new();
         }
 
@@ -97,11 +98,12 @@ namespace Benjy.CheckYoShit
 
         private void bAddItem_Click(object sender, RoutedEventArgs e)
         {
-            AddToList(); 
+            AddToList();
         }
 
         private void AddToList()
         {
+            var tbDescription = this.FindControl<TextBox>("tbDescription");
             if (!string.IsNullOrEmpty(tbDescription.Text))
             {
                 var item = new ToDoItem()
@@ -116,20 +118,20 @@ namespace Benjy.CheckYoShit
 
         private void lvToDoList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (sender is ListView listView && listView.SelectedItem is ToDoItem item)
+            if (sender is ListBox listView && listView.SelectedItem is ToDoItem item)
             {
-                if(e.Key == Key.Delete)
+                if (e.Key == Key.Delete)
                 {
                     ToDoItems.Remove(item);
                 }
             }
         }
 
-        private void tbDescription_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void tbDescription_KeyDown(object sender, KeyEventArgs e)
         {
-            if(sender is TextBox tbDescription)
+            if (sender is TextBox tbDescription)
             {
-                if(e.Key == Key.Enter)
+                if (e.Key == Key.Enter)
                 {
                     AddToList();
                     e.Handled = true;

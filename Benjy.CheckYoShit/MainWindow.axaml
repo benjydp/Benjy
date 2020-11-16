@@ -1,0 +1,26 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Benjy.CheckYoShit.MainWindow"
+        Title="ToDoList">
+  <Window.Styles>
+    <StyleInclude Source="/CustomStyle.axaml"/>
+  </Window.Styles>
+  <Grid Classes="top" ColumnDefinitions="*, auto" RowDefinitions="auto, *, auto">
+    <TextBlock Classes="h1" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="This Yo Shit"/>
+    <ListBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Items="{Binding ToDoItems}" KeyDown="lvToDoList_KeyDown">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <StackPanel>
+            <CheckBox IsChecked="{Binding IsDone}"/>
+            <TextBlock Text="{Binding Description}"/>
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+    <TextBox Name="tbDescription" KeyDown="tbDescription_KeyDown" Grid.Column="0" Grid.Row="2"/>
+    <Button Name="bAddItem" Click="bAddItem_Click" Grid.Column="1" Grid.Row="2">Fok Ye</Button>
+  </Grid>
+</Window>
