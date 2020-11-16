@@ -120,7 +120,7 @@ namespace Benjy.CheckYoShit
         {
             if (sender is ListBox listView && listView.SelectedItem is ToDoItem item)
             {
-                if (e.Key == Key.Delete)
+                if (e.Key == Key.Delete || e.Key == Key.Back)
                 {
                     ToDoItems.Remove(item);
                 }
